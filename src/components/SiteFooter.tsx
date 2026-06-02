@@ -1,17 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin, Mail } from "lucide-react";
+import { NuruLogo } from "./NuruLogo";
 
 export function SiteFooter() {
   return (
     <footer className="bg-[var(--navy-900)] text-white">
       <div className="container-nt grid gap-12 py-16 md:grid-cols-3">
         <div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-2xl font-bold">
-              Nuru<span className="text-[var(--gold-500)]">Trace</span>
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.28em] text-white/50">Labs</span>
-          </div>
+          <NuruLogo markClassName="h-10 w-10" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
             Blockchain intelligence with African context and global reach.
           </p>
@@ -69,8 +65,12 @@ export function SiteFooter() {
         <div className="container-nt flex flex-col items-start justify-between gap-3 py-6 text-xs text-white/40 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} NuruTrace Labs Limited. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/" className="hover:text-white">Privacy</Link>
-            <Link to="/" className="hover:text-white">Terms</Link>
+            <Link to="/" className="hover:text-white">
+              Privacy
+            </Link>
+            <Link to="/" className="hover:text-white">
+              Terms
+            </Link>
           </div>
         </div>
       </div>

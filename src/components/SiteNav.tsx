@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { NuruLogo } from "./NuruLogo";
 
 const links = [
   { to: "/services", label: "Services" },
@@ -15,13 +16,8 @@ export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/5 bg-[var(--navy-900)]/95 backdrop-blur">
       <div className="container-nt flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-baseline gap-2" onClick={() => setOpen(false)}>
-          <span className="font-display text-xl font-bold text-white">
-            Nuru<span className="text-[var(--gold-500)]">Trace</span>
-          </span>
-          <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-white/50">
-            Labs
-          </span>
+        <Link to="/" className="flex items-center" onClick={() => setOpen(false)}>
+          <NuruLogo />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

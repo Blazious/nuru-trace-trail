@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroImage from "@/assets/hero-network.jpg";
+import { NuruLogoMark } from "@/components/NuruLogo";
 import {
   Shield,
   Scale,
@@ -112,26 +113,33 @@ function Home() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy-900)]/70 via-[var(--navy-900)]/85 to-[var(--navy-900)]" />
         <div className="container-nt relative py-24 md:py-36">
-          <div className="max-w-3xl animate-fade-up">
-            <div className="flex items-center gap-3">
-              <span className="gold-divider" />
-              <span className="eyebrow text-[var(--gold-500)]">Nairobi · Kenya</span>
+          <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="max-w-3xl animate-fade-up">
+              <div className="flex items-center gap-3">
+                <span className="gold-divider" />
+                <span className="eyebrow text-[var(--gold-500)]">Nairobi · Kenya</span>
+              </div>
+              <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] md:text-7xl">
+                Blockchain intelligence with{" "}
+                <span className="text-[var(--gold-500)]">African context</span> and global reach.
+              </h1>
+              <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/70">
+                NuruTrace Labs helps law enforcement, financial institutions, and legal
+                professionals in Kenya and Africa trace, analyse, and understand crypto assets.
+              </p>
+              <div className="mt-10 flex flex-wrap gap-3">
+                <Link to="/contact" className="btn-gold">
+                  Request a Demo <ArrowRight className="ml-2" size={16} />
+                </Link>
+                <Link to="/services" className="btn-outline-gold">
+                  Our Services
+                </Link>
+              </div>
             </div>
-            <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] md:text-7xl">
-              Blockchain intelligence with{" "}
-              <span className="text-[var(--gold-500)]">African context</span> and global reach.
-            </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/70">
-              NuruTrace Labs helps law enforcement, financial institutions, and legal professionals
-              in Kenya and Africa trace, analyse, and understand crypto assets.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <Link to="/contact" className="btn-gold">
-                Request a Demo <ArrowRight className="ml-2" size={16} />
-              </Link>
-              <Link to="/services" className="btn-outline-gold">
-                Our Services
-              </Link>
+            <div className="hidden justify-self-end lg:block">
+              <div className="grid h-80 w-80 place-items-center rounded-full border border-[var(--gold-500)]/20 bg-[var(--navy-900)]/35 shadow-[0_35px_100px_-45px_rgba(255,195,38,0.65)] backdrop-blur-sm">
+                <NuruLogoMark className="h-64 w-64" />
+              </div>
             </div>
           </div>
         </div>
@@ -199,7 +207,9 @@ function Home() {
         <div className="container-nt">
           <div className="max-w-xl">
             <span className="eyebrow text-[var(--gold-500)]">Who we serve</span>
-            <h2 className="mt-3 text-4xl font-bold md:text-5xl">Built for those on the front line.</h2>
+            <h2 className="mt-3 text-4xl font-bold md:text-5xl">
+              Built for those on the front line.
+            </h2>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {audiences.map((a) => (
@@ -288,10 +298,7 @@ function Home() {
             <Link to="/contact" className="btn-gold">
               Request a Demo
             </Link>
-            <a
-              href="mailto:info@nurutrace.co.ke"
-              className="btn-outline-gold"
-            >
+            <a href="mailto:info@nurutrace.co.ke" className="btn-outline-gold">
               info@nurutrace.co.ke
             </a>
           </div>
