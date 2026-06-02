@@ -13,7 +13,7 @@ export function SiteFooter() {
           </p>
           <div className="mt-6 flex gap-3">
             <a
-              href="https://www.linkedin.com"
+              href="https://www.linkedin.com/company/nurutrace-labs-limited/posts/?feedView=all"
               aria-label="LinkedIn"
               className="grid h-9 w-9 place-items-center rounded-md border border-white/10 text-white/70 transition hover:border-[var(--gold-500)] hover:text-[var(--gold-500)]"
             >
