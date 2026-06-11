@@ -1,7 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
+import { getBlogPosts, type BlogPost } from "@/lib/sanity";
 
 export const Route = createFileRoute("/blog")({
+  loader: async () => {
+    try {
+      const sanityPosts = await getBlogPosts();
+      return { posts: sanityPosts.length > 0 ? sanityPosts : fallbackPosts };
+    } catch (error) {
+      console.error("Failed to load Sanity blog posts", error);
+      return { posts: fallbackPosts };
+    }
+  },
   head: () => ({
     meta: [
       { title: "Insights — NuruTrace Labs" },
@@ -22,10 +32,19 @@ export const Route = createFileRoute("/blog")({
   component: BlogPage,
 });
 
-const categories = ["All", "Forensics", "Compliance", "Kenya Policy", "Education", "Investigations"];
+const categories = [
+  "All",
+  "Forensics",
+  "Compliance",
+  "Kenya Policy",
+  "Education",
+  "Investigations",
+];
 
-const posts = [
+const fallbackPosts: BlogPost[] = [
   {
+    _id: "fallback-vasps-act",
+    slug: "what-the-vasps-act-2025-means-for-kenyan-businesses",
     tag: "Kenya Policy",
     title: "What the VASPs Act 2025 means for Kenyan businesses",
     excerpt:
@@ -36,6 +55,8 @@ const posts = [
     featured: true,
   },
   {
+    _id: "fallback-forensics-guide",
+    slug: "how-blockchain-forensics-works",
     tag: "Forensics",
     title: "How blockchain forensics works: a guide for law enforcement",
     excerpt:
@@ -45,6 +66,8 @@ const posts = [
     read: "6 min",
   },
   {
+    _id: "fallback-crypto-aml-checklist",
+    slug: "crypto-aml-for-african-banks",
     tag: "Compliance",
     title: "Crypto AML for African banks: a practical checklist",
     excerpt:
@@ -56,6 +79,7 @@ const posts = [
 ];
 
 function BlogPage() {
+  const { posts } = Route.useLoaderData();
   const [featured, ...rest] = posts;
 
   return (
@@ -136,7 +160,9 @@ function BlogPage() {
                   {p.excerpt}
                 </p>
                 <div className="mt-6 flex items-center justify-between text-xs text-[var(--grey-700)]">
-                  <span>{p.author} · {p.date}</span>
+                  <span>
+                    {p.author} · {p.date}
+                  </span>
                   <span className="inline-flex items-center gap-1">
                     <BookOpen size={12} /> {p.read}
                   </span>
@@ -158,10 +184,7 @@ function BlogPage() {
               No spam.
             </p>
           </div>
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex flex-col gap-3 sm:flex-row"
-          >
+          <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3 sm:flex-row">
             <input
               type="email"
               required
