@@ -14,13 +14,13 @@ import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — NuruTrace Labs" },
+      { title: "Services - NuruTrace Labs" },
       {
         name: "description",
         content:
           "Seven service lines spanning blockchain forensics, VASP compliance, legal education, and applied blockchain solutions.",
       },
-      { property: "og:title", content: "Services — NuruTrace Labs" },
+      { property: "og:title", content: "Services - NuruTrace Labs" },
       {
         property: "og:description",
         content:
@@ -103,7 +103,7 @@ function ServicesPage() {
             Seven service lines. <span className="text-[var(--gold-500)]">One mission.</span>
           </h1>
           <p className="mt-6 text-lg text-white/70">
-            From courtroom-ready forensics to multi-year compliance programmes — every engagement is
+            From courtroom-ready forensics to multi-year compliance programmes - every engagement is
             grounded in Kenyan law and African operating context.
           </p>
         </div>
@@ -155,13 +155,14 @@ function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--navy-900)] py-20 text-white">
-        <div className="container-nt flex flex-col items-center text-center">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-20 text-white">
+        <HeroMeshBackground />
+        <div className="container-nt relative flex flex-col items-center text-center">
           <h2 className="font-display text-4xl font-bold md:text-5xl">
             Not sure which service fits?
           </h2>
           <p className="mt-4 max-w-xl text-white/65">
-            Tell us about the problem — we'll point you to the right engagement model, or honestly
+            Tell us about the problem - we'll point you to the right engagement model, or honestly
             tell you if we're not the right partner.
           </p>
           <Link to="/contact" className="btn-gold mt-8">

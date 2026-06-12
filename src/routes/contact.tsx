@@ -6,13 +6,13 @@ import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Request a Demo — NuruTrace Labs" },
+      { title: "Request a Demo - NuruTrace Labs" },
       {
         name: "description",
         content:
           "Talk to NuruTrace Labs about an investigation, compliance programme, or training engagement.",
       },
-      { property: "og:title", content: "Request a Demo — NuruTrace Labs" },
+      { property: "og:title", content: "Request a Demo - NuruTrace Labs" },
       {
         property: "og:description",
         content: "Reach our Nairobi team for blockchain intelligence, compliance, and training.",
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 const serviceOptions = [
+  "Not sure yet",
   "LEA Support & Investigations",
   "VASP Compliance",
   "Bank & MFI Compliance",
@@ -65,7 +66,7 @@ function ContactPage() {
                   Message received.
                 </h2>
                 <p className="mt-3 max-w-md text-[var(--grey-700)]">
-                  Thanks for reaching out — we'll be in touch within one business day at the email
+                  Thanks for reaching out - we'll be in touch within one business day at the email
                   you provided.
                 </p>
               </div>
@@ -81,24 +82,46 @@ function ContactPage() {
                   <Field label="Full name" name="name" required />
                   <Field label="Organisation" name="org" required />
                 </div>
-                <Field label="Email" name="email" type="email" required />
+                <div className="grid gap-5 md:grid-cols-2">
+                  <Field label="Email" name="email" type="email" required />
+                  <Field label="Role / title" name="role" />
+                </div>
 
-                <div>
-                  <label className="eyebrow mb-2 block text-[var(--grey-700)]">
-                    Service interested in
-                  </label>
-                  <select
-                    required
-                    defaultValue=""
-                    className="w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--navy-900)] focus:border-[var(--navy-900)] focus:outline-none"
-                  >
-                    <option value="" disabled>
-                      Select a service…
-                    </option>
-                    {serviceOptions.map((s) => (
-                      <option key={s}>{s}</option>
-                    ))}
-                  </select>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <label className="eyebrow mb-2 block text-[var(--grey-700)]">
+                      Service interested in
+                    </label>
+                    <select
+                      required
+                      defaultValue=""
+                      className="w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--navy-900)] focus:border-[var(--navy-900)] focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select a service...
+                      </option>
+                      {serviceOptions.map((s) => (
+                        <option key={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="eyebrow mb-2 block text-[var(--grey-700)]">Timeline</label>
+                    <select
+                      required
+                      defaultValue=""
+                      className="w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--navy-900)] focus:border-[var(--navy-900)] focus:outline-none"
+                    >
+                      <option value="" disabled>
+                        Select a timeline...
+                      </option>
+                      <option>Urgent / active matter</option>
+                      <option>This month</option>
+                      <option>This quarter</option>
+                      <option>Exploratory</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -118,11 +141,33 @@ function ContactPage() {
                 <p className="flex items-center gap-2 pt-2 text-xs text-[var(--grey-700)]">
                   <Lock size={12} /> Your information is kept confidential and never shared.
                 </p>
+                <p className="text-xs leading-relaxed text-[var(--grey-700)]">
+                  Note: this demo currently confirms on-page only. Connect your preferred API or
+                  form endpoint when you are ready to route submissions.
+                </p>
               </form>
             )}
           </div>
 
           <aside className="space-y-8">
+            <div className="rounded-lg border border-[var(--border)] bg-white p-6">
+              <p className="eyebrow text-[var(--gold-500)]">What happens next</p>
+              <ol className="mt-4 space-y-3 text-sm leading-relaxed text-[var(--grey-700)]">
+                <li>
+                  <span className="font-semibold text-[var(--navy-900)]">1. Triage:</span> we
+                  identify the right service path.
+                </li>
+                <li>
+                  <span className="font-semibold text-[var(--navy-900)]">2. Scope:</span> we define
+                  data needed, constraints, and confidentiality.
+                </li>
+                <li>
+                  <span className="font-semibold text-[var(--navy-900)]">3. Engage:</span> we agree
+                  the investigation, compliance, or training model.
+                </li>
+              </ol>
+            </div>
+
             <InfoBlock icon={Mail} label="Email">
               <a
                 href="mailto:info@nurutrace.co.ke"

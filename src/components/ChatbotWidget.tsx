@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Bot, ChevronDown, MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { ArrowRight, Bot, ChevronDown, Mail, MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Message = {
@@ -8,18 +8,26 @@ type Message = {
   text: string;
 };
 
-const quickPrompts = [
-  "Which service fits me?",
-  "Tell me about VASP compliance",
-  "How do investigations work?",
-  "I need training",
+const guidedPrompts = [
+  {
+    label: "Investigations",
+    prompt: "How do investigations work?",
+  },
+  {
+    label: "Compliance",
+    prompt: "Tell me about VASP compliance",
+  },
+  {
+    label: "Training",
+    prompt: "I need training",
+  },
 ];
 
 const initialMessages: Message[] = [
   {
     id: 1,
     role: "assistant",
-    text: "Hi, I'm Nuru Assistant. I can help you find the right NuruTrace service, explain blockchain forensics, or point you to the contact team.",
+    text: "Hi, I'm Nuru Assistant. Choose a path below or ask a question about investigations, compliance, training, or blockchain forensics.",
   },
 ];
 
@@ -69,6 +77,8 @@ export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
   const widgetRef = useRef<HTMLDivElement>(null);
   const messageEndRef = useRef<HTMLDivElement>(null);
 
@@ -120,9 +130,38 @@ export function ChatbotWidget() {
     setIsOpen(true);
   };
 
+  const openHumanHandoff = () => {
+    setLeadOpen(true);
+    setLeadSubmitted(false);
+    setIsOpen(true);
+    setMessages((current) => [
+      ...current,
+      { id: Date.now(), role: "user", text: "I'd like to talk to a human." },
+      {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: "Sure. Share a few details here for context, then use the contact page or email info@nurutrace.co.ke when you are ready to send. The live lead destination will be connected later.",
+      },
+    ]);
+  };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     sendMessage(input);
+  };
+
+  const handleLeadSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setLeadSubmitted(true);
+    setLeadOpen(false);
+    setMessages((current) => [
+      ...current,
+      {
+        id: Date.now(),
+        role: "assistant",
+        text: "Got it. I have prepared the context locally in this chat. Since the lead destination is not connected yet, please use the contact page or email info@nurutrace.co.ke to send the request.",
+      },
+    ]);
   };
 
   return (
@@ -156,6 +195,24 @@ export function ChatbotWidget() {
           </div>
 
           <div className="max-h-[360px] space-y-3 overflow-y-auto bg-[var(--cream-50)] px-4 py-4">
+            {messages.length === 1 && (
+              <div className="rounded-lg border border-[var(--border)] bg-white p-3">
+                <p className="text-sm font-semibold text-[var(--navy-900)]">How can we help?</p>
+                <div className="mt-3 grid gap-2">
+                  {guidedPrompts.map((item) => (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => sendMessage(item.prompt)}
+                      className="flex items-center justify-between rounded-md border border-[var(--border)] px-3 py-2 text-left text-sm font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
+                    >
+                      {item.label}
+                      <ArrowRight size={14} className="text-[var(--gold-500)]" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -172,21 +229,59 @@ export function ChatbotWidget() {
                 </div>
               </div>
             ))}
+            {leadOpen && !leadSubmitted && (
+              <form
+                onSubmit={handleLeadSubmit}
+                className="rounded-lg border border-[var(--gold-500)]/40 bg-white p-3"
+              >
+                <p className="text-sm font-semibold text-[var(--navy-900)]">Handoff context</p>
+                <div className="mt-3 grid gap-2">
+                  <input
+                    name="name"
+                    required
+                    placeholder="Full name"
+                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                  />
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="Email"
+                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                  />
+                  <input
+                    name="organisation"
+                    placeholder="Organisation"
+                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                  />
+                  <button type="submit" className="btn-gold !py-2 text-xs">
+                    Prepare request
+                  </button>
+                </div>
+              </form>
+            )}
             <div ref={messageEndRef} />
           </div>
 
           <div className="border-t border-[var(--border)] bg-white p-4">
             <div className="mb-3 flex flex-wrap gap-2">
-              {quickPrompts.map((prompt) => (
+              {guidedPrompts.map((item) => (
                 <button
-                  key={prompt}
+                  key={item.label}
                   type="button"
-                  onClick={() => sendMessage(prompt)}
+                  onClick={() => sendMessage(item.prompt)}
                   className="rounded-md border border-[var(--border)] px-2.5 py-1.5 text-xs font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
                 >
-                  {prompt}
+                  {item.label}
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={openHumanHandoff}
+                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--gold-500)] bg-[var(--cream-50)] px-2.5 py-1.5 text-xs font-semibold text-[var(--navy-900)] transition-colors hover:bg-[var(--gold-500)]"
+              >
+                <Mail size={13} /> Talk to a human
+              </button>
             </div>
 
             <form onSubmit={handleSubmit} className="flex gap-2">
@@ -228,7 +323,7 @@ export function ChatbotWidget() {
       <button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className="inline-flex h-14 items-center gap-3 rounded-full bg-[var(--gold-500)] px-4 font-semibold text-[var(--navy-900)] shadow-[0_16px_44px_-16px_rgba(10,22,40,0.65)] transition-all hover:bg-[var(--gold-300)] hover:shadow-[0_18px_52px_-14px_rgba(10,22,40,0.75)]"
+        className="inline-flex h-12 items-center gap-2.5 rounded-full bg-[var(--gold-500)] px-3.5 font-semibold text-[var(--navy-900)] shadow-[0_12px_34px_-18px_rgba(10,22,40,0.7)] transition-all hover:bg-[var(--gold-300)] hover:shadow-[0_16px_42px_-18px_rgba(10,22,40,0.75)]"
         aria-label={isOpen ? "Minimize chatbot" : "Open chatbot"}
         aria-expanded={isOpen}
       >

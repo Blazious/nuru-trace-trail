@@ -15,13 +15,13 @@ export const Route = createFileRoute("/blog")({
   },
   head: () => ({
     meta: [
-      { title: "Insights — NuruTrace Labs" },
+      { title: "Insights - NuruTrace Labs" },
       {
         name: "description",
         content:
           "Field notes on blockchain forensics, Kenya VASP compliance, and crypto investigations across Africa.",
       },
-      { property: "og:title", content: "Insights — NuruTrace Labs" },
+      { property: "og:title", content: "Insights - NuruTrace Labs" },
       {
         property: "og:description",
         content: "Briefings on Kenya's VASPs Act, crypto investigations, and forensic methodology.",
@@ -49,7 +49,7 @@ const fallbackPosts: BlogPost[] = [
     tag: "Kenya Policy",
     title: "What the VASPs Act 2025 means for Kenyan businesses",
     excerpt:
-      "An operator's guide to Kenya's first dedicated crypto law: registration triggers, timelines, and what compliance teams should be doing today.",
+      "A practical operator's guide to Kenya's dedicated crypto law: who may need registration, what controls matter first, and how teams can prepare for supervision.",
     author: "NuruTrace Editorial",
     date: "Jun 2026",
     read: "8 min",
@@ -61,7 +61,7 @@ const fallbackPosts: BlogPost[] = [
     tag: "Forensics",
     title: "How blockchain forensics works: a guide for law enforcement",
     excerpt:
-      "Wallet clustering, cross-chain bridges, mixers, and DEX traces — the techniques investigators need to understand.",
+      "Wallet clustering, cross-chain bridges, mixers, and DEX traces: the techniques investigators need to understand.",
     author: "NuruTrace Editorial",
     date: "Jun 2026",
     read: "6 min",
@@ -72,16 +72,35 @@ const fallbackPosts: BlogPost[] = [
     tag: "Compliance",
     title: "Crypto AML for African banks: a practical checklist",
     excerpt:
-      "Risk scoring, sanctions screening, and transaction monitoring tuned to emerging-market exposure patterns.",
+      "A field checklist for spotting crypto-rail exposure, setting escalation thresholds, and tuning monitoring to emerging-market payment patterns.",
     author: "NuruTrace Editorial",
     date: "Jun 2026",
     read: "5 min",
   },
 ];
 
+const takeaways: Record<string, string[]> = {
+  "what-the-vasps-act-2025-means-for-kenyan-businesses": [
+    "Map whether your activity touches custody, exchange, transfer, brokerage, or related virtual asset services.",
+    "Prioritise AML governance, transaction monitoring, sanctions screening, and Travel Rule readiness.",
+    "Document controls early so registration work is evidence-led, not rushed at filing time.",
+  ],
+  "how-blockchain-forensics-works": [
+    "Start with a wallet, transaction hash, exchange deposit, or victim report and preserve the original evidence trail.",
+    "Use clustering, bridge analysis, mixer exposure, and off-ramp indicators to build investigative hypotheses.",
+    "Translate technical findings into a chronology that investigators, prosecutors, and courts can follow.",
+  ],
+  "crypto-aml-for-african-banks": [
+    "Identify where crypto exposure enters the bank: merchants, cards, mobile money, P2P flows, and payment gateways.",
+    "Tune monitoring to local typologies instead of relying only on imported risk rules.",
+    "Create escalation playbooks for compliance, fraud, legal, and relationship teams.",
+  ],
+};
+
 function BlogPage() {
   const { posts } = Route.useLoaderData();
   const [featured, ...rest] = posts;
+  const featuredTakeaways = takeaways[featured.slug] ?? [];
 
   return (
     <>
@@ -126,17 +145,26 @@ function BlogPage() {
             <div className="aspect-[4/3] rounded-md bg-gradient-to-br from-[var(--navy-900)] via-[var(--navy-800)] to-[var(--navy-700)] md:aspect-auto" />
             <div className="flex flex-col justify-center">
               <span className="self-start rounded bg-[var(--gold-500)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--navy-900)]">
-                Featured · {featured.tag}
+                Featured / {featured.tag}
               </span>
               <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-[var(--navy-900)] md:text-4xl">
                 {featured.title}
               </h2>
               <p className="mt-4 text-[var(--grey-700)]">{featured.excerpt}</p>
+              {featuredTakeaways.length > 0 && (
+                <ul className="mt-5 space-y-2 text-sm leading-relaxed text-[var(--grey-700)]">
+                  {featuredTakeaways.map((item) => (
+                    <li key={item} className="border-l-2 border-[var(--gold-500)] pl-3">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <div className="mt-6 flex items-center gap-4 text-xs text-[var(--grey-700)]">
                 <span>{featured.author}</span>
-                <span>·</span>
+                <span>/</span>
                 <span>{featured.date}</span>
-                <span>·</span>
+                <span>/</span>
                 <span className="inline-flex items-center gap-1">
                   <BookOpen size={12} /> {featured.read}
                 </span>
@@ -161,9 +189,17 @@ function BlogPage() {
                 <p className="mt-3 flex-1 text-[15px] leading-relaxed text-[var(--grey-700)]">
                   {p.excerpt}
                 </p>
+                {takeaways[p.slug]?.slice(0, 2).map((item) => (
+                  <p
+                    key={item}
+                    className="mt-3 border-l-2 border-[var(--gold-500)] pl-3 text-sm leading-relaxed text-[var(--grey-700)]"
+                  >
+                    {item}
+                  </p>
+                ))}
                 <div className="mt-6 flex items-center justify-between text-xs text-[var(--grey-700)]">
                   <span>
-                    {p.author} · {p.date}
+                    {p.author} / {p.date}
                   </span>
                   <span className="inline-flex items-center gap-1">
                     <BookOpen size={12} /> {p.read}
@@ -175,8 +211,9 @@ function BlogPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--navy-900)] py-20 text-white">
-        <div className="container-nt grid items-center gap-10 md:grid-cols-2">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-20 text-white">
+        <HeroMeshBackground />
+        <div className="container-nt relative grid items-center gap-10 md:grid-cols-2">
           <div>
             <h2 className="font-display text-3xl font-bold md:text-4xl">
               Get briefings in your inbox.

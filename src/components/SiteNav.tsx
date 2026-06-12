@@ -25,8 +25,10 @@ export function SiteNav() {
             <Link
               key={l.to}
               to={l.to}
-              className="text-[15px] font-medium text-white/65 transition-colors hover:text-white"
-              activeProps={{ className: "text-white" }}
+              className="relative py-1 text-[15px] font-medium text-white/65 transition-colors after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-[var(--gold-500)] after:transition-transform hover:text-white"
+              activeProps={{
+                className: "text-white after:scale-x-100",
+              }}
             >
               {l.label}
             </Link>
@@ -54,6 +56,7 @@ export function SiteNav() {
                 to={l.to}
                 onClick={() => setOpen(false)}
                 className="rounded-md px-2 py-3 text-base font-medium text-white/75 hover:bg-white/5 hover:text-white"
+                activeProps={{ className: "bg-white/5 text-white" }}
               >
                 {l.label}
               </Link>

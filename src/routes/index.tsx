@@ -8,18 +8,23 @@ import {
   Landmark,
   Building2,
   BookOpen,
+  Search,
+  FileCheck2,
+  Workflow,
+  LockKeyhole,
 } from "lucide-react";
+import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "NuruTrace Labs — Blockchain Intelligence for Kenya & Africa" },
+      { title: "NuruTrace Labs - Blockchain Intelligence for Kenya & Africa" },
       {
         name: "description",
         content:
           "NuruTrace Labs helps law enforcement, financial institutions, and legal professionals in Kenya and Africa trace, analyse, and understand crypto assets.",
       },
-      { property: "og:title", content: "NuruTrace Labs — Blockchain Intelligence for Africa" },
+      { property: "og:title", content: "NuruTrace Labs - Blockchain Intelligence for Africa" },
       {
         property: "og:description",
         content: "Forensics, compliance, and intelligence built for Kenya's VASPs Act 2025.",
@@ -74,19 +79,61 @@ const audiences = [
   },
 ];
 
+const complianceSignals = [
+  {
+    title: "VASPs Act readiness",
+    line: "Registration, governance, AML policy, risk assessment, and monitoring support for Kenyan virtual asset businesses.",
+  },
+  {
+    title: "FATF-aligned controls",
+    line: "Practical controls for sanctions screening, source-of-funds review, Travel Rule awareness, and suspicious activity escalation.",
+  },
+  {
+    title: "Court-aware reporting",
+    line: "Forensic outputs written for investigators, counsel, compliance officers, and decision-makers who need defensible evidence.",
+  },
+  {
+    title: "Confidential by design",
+    line: "Engagements are handled with strict information discipline, limited disclosure, and a clear chain of custody mindset.",
+  },
+];
+
+const methodology = [
+  {
+    icon: Search,
+    title: "Trace",
+    line: "Follow funds across wallets, exchanges, bridges, mixers, and off-ramp indicators.",
+  },
+  {
+    icon: Workflow,
+    title: "Analyse",
+    line: "Cluster activity, score exposure, identify typologies, and separate signal from noise.",
+  },
+  {
+    icon: FileCheck2,
+    title: "Report",
+    line: "Turn findings into briefings, case files, compliance memos, or training material.",
+  },
+  {
+    icon: LockKeyhole,
+    title: "Advise",
+    line: "Help teams act on findings with proportionate controls, escalation paths, and next steps.",
+  },
+];
+
 const posts = [
   {
     tag: "Kenya Policy",
     title: "What the VASPs Act 2025 means for Kenyan businesses",
     excerpt:
-      "An operator's guide to Kenya's first dedicated crypto law — what changes, who must register, and how to prepare.",
+      "An operator's guide to Kenya's first dedicated crypto law: what changes, who must register, and how to prepare.",
     read: "8 min read",
   },
   {
     tag: "Forensics",
     title: "How blockchain forensics works: a guide for law enforcement",
     excerpt:
-      "From wallet clustering to cross-chain tracing — the techniques investigators need to understand today.",
+      "From wallet clustering to cross-chain tracing: the techniques investigators need to understand today.",
     read: "6 min read",
   },
   {
@@ -115,7 +162,7 @@ function Home() {
           <div className="max-w-3xl animate-fade-up">
             <div className="flex items-center gap-3">
               <span className="gold-divider" />
-              <span className="eyebrow text-[var(--gold-500)]">Nairobi · Kenya</span>
+              <span className="eyebrow text-[var(--gold-500)]">Nairobi / Kenya</span>
             </div>
             <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] md:text-7xl">
               Blockchain intelligence with{" "}
@@ -167,7 +214,7 @@ function Home() {
               to="/services"
               className="text-sm font-semibold text-[var(--navy-900)] underline-offset-4 hover:underline"
             >
-              View all 7 services →
+              View all 7 services <ArrowRight size={14} className="ml-1.5 inline" />
             </Link>
           </div>
 
@@ -218,11 +265,69 @@ function Home() {
         </div>
       </section>
 
+      {/* Compliance proof */}
+      <section className="bg-white py-24">
+        <div className="container-nt">
+          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
+            <div>
+              <span className="eyebrow text-[var(--gold-500)]">Trust framework</span>
+              <h2 className="mt-3 text-4xl font-bold text-[var(--navy-900)] md:text-5xl">
+                Built for regulated, high-stakes work.
+              </h2>
+              <p className="mt-5 text-[15px] leading-relaxed text-[var(--grey-700)]">
+                NuruTrace is designed for teams that need more than charts. The work has to stand up
+                to scrutiny from regulators, boards, courts, and investigators.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {complianceSignals.map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-lg border border-[var(--border)] bg-[var(--cream-50)] p-6"
+                >
+                  <h3 className="text-base font-semibold text-[var(--navy-900)]">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--grey-700)]">{item.line}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Methodology */}
+      <section className="bg-[var(--cream-50)] py-24">
+        <div className="container-nt">
+          <div className="max-w-2xl">
+            <span className="eyebrow text-[var(--gold-500)]">How we work</span>
+            <h2 className="mt-3 text-4xl font-bold text-[var(--navy-900)] md:text-5xl">
+              A clear path from transaction data to decision.
+            </h2>
+          </div>
+          <div className="mt-14 grid gap-4 md:grid-cols-4">
+            {methodology.map((step, index) => (
+              <div
+                key={step.title}
+                className="rounded-lg border border-[var(--border)] bg-white p-6"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="grid h-11 w-11 place-items-center rounded-md bg-[var(--navy-900)] text-[var(--gold-500)]">
+                    <step.icon size={20} />
+                  </div>
+                  <span className="font-mono text-xs text-[var(--grey-700)]">0{index + 1}</span>
+                </div>
+                <h3 className="mt-5 text-xl font-semibold text-[var(--navy-900)]">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--grey-700)]">{step.line}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Trust bar */}
       <section className="border-y border-[var(--border)] bg-white py-12">
         <div className="container-nt">
           <p className="eyebrow text-center text-[var(--grey-700)]">
-            Built for Kenya's VASPs Act 2025 · Aligned with FATF guidelines · CMA-aware compliance ·
+            Built for Kenya's VASPs Act 2025 / Aligned with FATF guidelines / CMA-aware compliance /
             OSINT-grade forensics
           </p>
         </div>
@@ -242,7 +347,7 @@ function Home() {
               to="/blog"
               className="text-sm font-semibold text-[var(--navy-900)] underline-offset-4 hover:underline"
             >
-              All articles →
+              All articles <ArrowRight size={14} className="ml-1.5 inline" />
             </Link>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
@@ -268,7 +373,7 @@ function Home() {
                     to="/blog"
                     className="font-semibold text-[var(--gold-500)] hover:text-[var(--navy-900)]"
                   >
-                    Read more →
+                    Read more <ArrowRight size={13} className="ml-1 inline" />
                   </Link>
                 </div>
               </article>
@@ -278,8 +383,9 @@ function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-[var(--navy-900)] py-24 text-white">
-        <div className="container-nt text-center">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-24 text-white">
+        <HeroMeshBackground />
+        <div className="container-nt relative text-center">
           <h2 className="font-display text-4xl font-bold md:text-6xl">
             Ready to <span className="text-[var(--gold-500)]">trace the chain?</span>
           </h2>

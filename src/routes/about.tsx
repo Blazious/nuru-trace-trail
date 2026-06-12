@@ -5,13 +5,13 @@ import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — NuruTrace Labs" },
+      { title: "About - NuruTrace Labs" },
       {
         name: "description",
         content:
           "Founded in Nairobi to bring blockchain intelligence to Africa's regulators, investigators, and institutions.",
       },
-      { property: "og:title", content: "About — NuruTrace Labs" },
+      { property: "og:title", content: "About - NuruTrace Labs" },
       {
         property: "og:description",
         content: "Every financial crime leaves a trace. Our job is to find it.",
@@ -65,7 +65,7 @@ function AboutPage() {
             <p>
               NuruTrace Labs was founded in 2026, the moment Kenya became one of the first African
               nations to enact a dedicated framework for virtual asset service providers. The VASPs
-              Act 2025 and its 2026 regulations created a market that needed local expertise — not
+              Act 2025 and its 2026 regulations created a market that needed local expertise - not
               imported playbooks.
             </p>
             <p>
@@ -77,7 +77,7 @@ function AboutPage() {
             </p>
             <p>
               Our team blends forensics, legal practice, and compliance experience earned inside
-              East African institutions. We work where the work actually happens — Nairobi first,
+              East African institutions. We work where the work actually happens - Nairobi first,
               the continent next.
             </p>
           </div>
@@ -113,8 +113,9 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[var(--navy-900)] py-24 text-white">
-        <div className="container-nt grid gap-12 md:grid-cols-2">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-24 text-white">
+        <HeroMeshBackground />
+        <div className="container-nt relative grid gap-12 md:grid-cols-2">
           <div>
             <span className="eyebrow text-[var(--gold-500)]">Kenya context</span>
             <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">Why Kenya first.</h2>
@@ -128,7 +129,7 @@ function AboutPage() {
             <p>
               With M-Pesa as the world's most mature mobile-money rail and a young, crypto-fluent
               population, Kenya is the natural launchpad for blockchain intelligence built for the
-              continent — not imported and translated.
+              continent - not imported and translated.
             </p>
           </div>
         </div>
@@ -139,13 +140,13 @@ function AboutPage() {
           <p className="eyebrow text-[var(--gold-500)]">Aligned with</p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-sm font-medium text-[var(--grey-700)]">
             <span>VASPs Act 2025</span>
-            <span className="text-[var(--border)]">·</span>
+            <span className="text-[var(--border)]">/</span>
             <span>CMA Kenya</span>
-            <span className="text-[var(--border)]">·</span>
+            <span className="text-[var(--border)]">/</span>
             <span>FATF Guidelines</span>
-            <span className="text-[var(--border)]">·</span>
+            <span className="text-[var(--border)]">/</span>
             <span>Travel Rule</span>
-            <span className="text-[var(--border)]">·</span>
+            <span className="text-[var(--border)]">/</span>
             <span>OSINT Standards</span>
           </div>
           <Link to="/contact" className="btn-gold mt-10">
