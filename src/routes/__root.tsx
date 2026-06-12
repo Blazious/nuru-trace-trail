@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteNav } from "../components/SiteNav";
 import { SiteFooter } from "../components/SiteFooter";
+import { ChatbotWidget } from "../components/ChatbotWidget";
 
 function NotFoundComponent() {
   return (
@@ -91,11 +92,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "NuruTrace Labs — Blockchain Intelligence for Africa" },
       { name: "twitter:title", content: "NuruTrace Labs — Blockchain Intelligence for Africa" },
-      { name: "description", content: "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services." },
-      { property: "og:description", content: "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services." },
-      { name: "twitter:description", content: "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7197dac1-1d01-4acf-be7e-750037884613/id-preview-3abf6856--043f32d6-0a37-43e3-b74f-9f34cd609667.lovable.app-1780382983463.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7197dac1-1d01-4acf-be7e-750037884613/id-preview-3abf6856--043f32d6-0a37-43e3-b74f-9f34cd609667.lovable.app-1780382983463.png" },
+      {
+        name: "description",
+        content:
+          "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services.",
+      },
+      {
+        property: "og:description",
+        content:
+          "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "NuruTrace Launchpad is a website for a blockchain intelligence company offering forensics, compliance, and analysis services.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7197dac1-1d01-4acf-be7e-750037884613/id-preview-3abf6856--043f32d6-0a37-43e3-b74f-9f34cd609667.lovable.app-1780382983463.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7197dac1-1d01-4acf-be7e-750037884613/id-preview-3abf6856--043f32d6-0a37-43e3-b74f-9f34cd609667.lovable.app-1780382983463.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -139,6 +160,7 @@ function RootComponent() {
           <Outlet />
         </main>
         <SiteFooter />
+        <ChatbotWidget />
       </div>
     </QueryClientProvider>
   );
