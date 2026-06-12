@@ -148,6 +148,108 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes mesh-drift {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-1.5%, 1%, 0); }
+}
+
+@keyframes mesh-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes mesh-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.45); }
+}
+
+@keyframes mesh-node-glow {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+@keyframes mesh-orbit {
+  0%, 100% { opacity: 0.25; stroke-dashoffset: 0.95; }
+  50% { opacity: 0.85; stroke-dashoffset: 0.2; }
+}
+
 .animate-fade-up {
   animation: fade-up 0.7s ease-out both;
+}
+
+.mesh-motion {
+  animation: mesh-drift 16s ease-in-out infinite;
+}
+
+.mesh-grid {
+  opacity: 0.7;
+}
+
+.mesh-line,
+.mesh-orbit {
+  fill: none;
+  stroke: url("#mesh-line-gradient");
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.18;
+  vector-effect: non-scaling-stroke;
+}
+
+.mesh-line {
+  animation: mesh-draw 5.5s ease-in-out infinite alternate;
+}
+
+.mesh-line-delayed {
+  animation-delay: 1.2s;
+}
+
+.mesh-orbit {
+  animation: mesh-orbit 6s ease-in-out infinite;
+  stroke: rgba(245, 166, 35, 0.55);
+  stroke-width: 0.16;
+}
+
+.mesh-node,
+.mesh-node-ring,
+.mesh-large-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  vector-effect: non-scaling-stroke;
+}
+
+.mesh-node {
+  animation: mesh-node-glow 3.2s ease-in-out infinite;
+  animation-delay: var(--pulse-delay);
+  fill: var(--gold-500);
+  filter: drop-shadow(0 0 8px rgba(245, 166, 35, 0.5));
+}
+
+.mesh-node-ring {
+  animation: mesh-pulse 3.2s ease-in-out infinite;
+  animation-delay: var(--pulse-delay);
+  fill: transparent;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 0.16;
+}
+
+.mesh-large-ring {
+  animation: mesh-pulse 5.5s ease-in-out infinite;
+  fill: transparent;
+  opacity: 0.55;
+  stroke: rgba(245, 166, 35, 0.32);
+  stroke-width: 0.14;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-motion,
+  .mesh-line,
+  .mesh-orbit,
+  .mesh-node,
+  .mesh-node-ring,
+  .mesh-large-ring,
+  .animate-fade-up {
+    animation: none;
+  }
 }

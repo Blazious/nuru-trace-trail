@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import heroImage from "@/assets/hero-network.jpg";
 import {
   Shield,
   Scale,
@@ -150,14 +149,7 @@ function Home() {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden bg-[var(--navy-900)] text-white">
-        <img
-          src={heroImage}
-          alt=""
-          width={1920}
-          height={1080}
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy-900)]/70 via-[var(--navy-900)]/85 to-[var(--navy-900)]" />
+        <HeroMeshBackground />
         <div className="container-nt relative py-24 md:py-36">
           <div className="max-w-3xl animate-fade-up">
             <div className="flex items-center gap-3">
