@@ -9,6 +9,7 @@ import {
   Boxes,
   ArrowRight,
 } from "lucide-react";
+import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -22,7 +23,8 @@ export const Route = createFileRoute("/services")({
       { property: "og:title", content: "Services — NuruTrace Labs" },
       {
         property: "og:description",
-        content: "Forensics, compliance, investigations, and education for Africa's crypto economy.",
+        content:
+          "Forensics, compliance, investigations, and education for Africa's crypto economy.",
       },
       { property: "og:url", content: "/services" },
     ],
@@ -93,16 +95,16 @@ const services = [
 function ServicesPage() {
   return (
     <>
-      <section className="bg-[var(--navy-900)] py-24 text-white md:py-32">
-        <div className="container-nt max-w-3xl">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-24 text-white md:py-32">
+        <HeroMeshBackground />
+        <div className="container-nt relative max-w-3xl">
           <span className="eyebrow text-[var(--gold-500)]">Our services</span>
           <h1 className="mt-4 font-display text-5xl font-bold leading-tight md:text-6xl">
-            Seven service lines.{" "}
-            <span className="text-[var(--gold-500)]">One mission.</span>
+            Seven service lines. <span className="text-[var(--gold-500)]">One mission.</span>
           </h1>
           <p className="mt-6 text-lg text-white/70">
-            From courtroom-ready forensics to multi-year compliance programmes — every engagement
-            is grounded in Kenyan law and African operating context.
+            From courtroom-ready forensics to multi-year compliance programmes — every engagement is
+            grounded in Kenyan law and African operating context.
           </p>
         </div>
       </section>
@@ -118,9 +120,7 @@ function ServicesPage() {
                 <div className="grid h-12 w-12 place-items-center rounded-md bg-[var(--navy-900)] text-[var(--gold-500)]">
                   <s.icon size={22} />
                 </div>
-                <span className="text-[10px] font-mono text-[var(--grey-700)]">
-                  0{i + 1} / 07
-                </span>
+                <span className="text-[10px] font-mono text-[var(--grey-700)]">0{i + 1} / 07</span>
               </div>
 
               <div className="mt-6 flex flex-wrap gap-1.5">

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, MapPin, Linkedin, Lock, Check } from "lucide-react";
+import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -38,8 +39,9 @@ function ContactPage() {
 
   return (
     <>
-      <section className="bg-[var(--navy-900)] py-24 text-white md:py-32">
-        <div className="container-nt max-w-3xl">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-24 text-white md:py-32">
+        <HeroMeshBackground />
+        <div className="container-nt relative max-w-3xl">
           <span className="eyebrow text-[var(--gold-500)]">Get in touch</span>
           <h1 className="mt-4 font-display text-5xl font-bold leading-tight md:text-6xl">
             Request a <span className="text-[var(--gold-500)]">demo.</span>
@@ -90,7 +92,9 @@ function ContactPage() {
                     defaultValue=""
                     className="w-full rounded-md border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--navy-900)] focus:border-[var(--navy-900)] focus:outline-none"
                   >
-                    <option value="" disabled>Select a service…</option>
+                    <option value="" disabled>
+                      Select a service…
+                    </option>
                     {serviceOptions.map((s) => (
                       <option key={s}>{s}</option>
                     ))}
@@ -133,7 +137,10 @@ function ContactPage() {
               <span className="text-xs text-[var(--grey-700)]">By appointment</span>
             </InfoBlock>
             <InfoBlock icon={Linkedin} label="LinkedIn">
-              <a href="#" className="font-medium text-[var(--navy-900)] hover:text-[var(--gold-500)]">
+              <a
+                href="#"
+                className="font-medium text-[var(--navy-900)] hover:text-[var(--gold-500)]"
+              >
                 /company/nurutrace-labs
               </a>
             </InfoBlock>

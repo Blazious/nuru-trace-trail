@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Linkedin } from "lucide-react";
+import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -43,8 +44,9 @@ const founders = [
 function AboutPage() {
   return (
     <>
-      <section className="bg-[var(--navy-900)] py-28 text-white md:py-36">
-        <div className="container-nt max-w-4xl">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-28 text-white md:py-36">
+        <HeroMeshBackground />
+        <div className="container-nt relative max-w-4xl">
           <span className="eyebrow text-[var(--gold-500)]">Our mission</span>
           <h1 className="mt-6 font-display text-5xl font-bold leading-[1.05] md:text-7xl">
             Every financial crime leaves a trace.{" "}
@@ -62,21 +64,21 @@ function AboutPage() {
           <div className="space-y-6 text-lg leading-relaxed text-[var(--grey-700)]">
             <p>
               NuruTrace Labs was founded in 2026, the moment Kenya became one of the first African
-              nations to enact a dedicated framework for virtual asset service providers. The
-              VASPs Act 2025 and its 2026 regulations created a market that needed local expertise —
-              not imported playbooks.
+              nations to enact a dedicated framework for virtual asset service providers. The VASPs
+              Act 2025 and its 2026 regulations created a market that needed local expertise — not
+              imported playbooks.
             </p>
             <p>
-              We started NuruTrace to fill that gap. <strong className="text-[var(--navy-900)]">Nuru</strong>
-              {" "}is Swahili for light. Combined with{" "}
-              <strong className="text-[var(--navy-900)]">trace</strong>, it captures what we do:
-              illuminate the on-chain activity that matters to Kenya's regulators, banks, courts,
-              and investigators.
+              We started NuruTrace to fill that gap.{" "}
+              <strong className="text-[var(--navy-900)]">Nuru</strong> is Swahili for light.
+              Combined with <strong className="text-[var(--navy-900)]">trace</strong>, it captures
+              what we do: illuminate the on-chain activity that matters to Kenya's regulators,
+              banks, courts, and investigators.
             </p>
             <p>
               Our team blends forensics, legal practice, and compliance experience earned inside
-              East African institutions. We work where the work actually happens — Nairobi
-              first, the continent next.
+              East African institutions. We work where the work actually happens — Nairobi first,
+              the continent next.
             </p>
           </div>
         </div>
@@ -92,10 +94,7 @@ function AboutPage() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {founders.map((f) => (
-              <div
-                key={f.title}
-                className="rounded-lg border border-[var(--border)] bg-white p-8"
-              >
+              <div key={f.title} className="rounded-lg border border-[var(--border)] bg-white p-8">
                 <div className="aspect-square w-full rounded-md bg-gradient-to-br from-[var(--navy-900)] to-[var(--navy-700)] grid place-items-center">
                   <span className="font-display text-5xl text-[var(--gold-500)]">N</span>
                 </div>
@@ -118,15 +117,13 @@ function AboutPage() {
         <div className="container-nt grid gap-12 md:grid-cols-2">
           <div>
             <span className="eyebrow text-[var(--gold-500)]">Kenya context</span>
-            <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">
-              Why Kenya first.
-            </h2>
+            <h2 className="mt-3 font-display text-4xl font-bold md:text-5xl">Why Kenya first.</h2>
           </div>
           <div className="space-y-5 text-white/75">
             <p>
-              Kenya's <strong className="text-white">VASPs Act 2025</strong> and its 2026 regulations
-              place the country at the forefront of African crypto regulation, with the CMA, CBK,
-              and FRC building the infrastructure for licensed virtual asset activity.
+              Kenya's <strong className="text-white">VASPs Act 2025</strong> and its 2026
+              regulations place the country at the forefront of African crypto regulation, with the
+              CMA, CBK, and FRC building the infrastructure for licensed virtual asset activity.
             </p>
             <p>
               With M-Pesa as the world's most mature mobile-money rail and a young, crypto-fluent

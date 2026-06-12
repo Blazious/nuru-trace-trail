@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen } from "lucide-react";
 import { getBlogPosts, type BlogPost } from "@/lib/sanity";
+import { HeroMeshBackground } from "@/components/HeroMeshBackground";
 
 export const Route = createFileRoute("/blog")({
   loader: async () => {
@@ -84,8 +85,9 @@ function BlogPage() {
 
   return (
     <>
-      <section className="bg-[var(--navy-900)] py-24 text-white md:py-32">
-        <div className="container-nt max-w-3xl">
+      <section className="relative overflow-hidden bg-[var(--navy-900)] py-24 text-white md:py-32">
+        <HeroMeshBackground />
+        <div className="container-nt relative max-w-3xl">
           <span className="eyebrow text-[var(--gold-500)]">Insights</span>
           <h1 className="mt-4 font-display text-5xl font-bold leading-tight md:text-6xl">
             Field notes from the chain.
