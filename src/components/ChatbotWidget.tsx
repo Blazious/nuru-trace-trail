@@ -2,10 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bot, ChevronDown, Mail, MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
+import { askNuruAssistant } from "../lib/api/chat.functions";
+
 type Message = {
   id: number;
   role: "assistant" | "user";
   text: string;
+  pending?: boolean;
 };
 
 const guidedPrompts = [
@@ -33,6 +36,21 @@ const initialMessages: Message[] = [
 
 function buildReply(input: string) {
   const text = input.toLowerCase();
+
+  if (/^(hi|hey|hello|hallo|sup|yo)\b/.test(text)) {
+    return "Hi, welcome to NuruTrace Labs. Are you looking for help with an investigation, compliance, training, or a blockchain solution?";
+  }
+
+  if (
+    text.includes("what is this") ||
+    text.includes("what's this") ||
+    text.includes("what is the platform") ||
+    text.includes("whats this platform") ||
+    text.includes("platform about") ||
+    text.includes("what do you do")
+  ) {
+    return "NuruTrace Labs helps teams understand, trace, and manage blockchain activity. We support investigations, VASP compliance, bank and MFI advisory, training, research, and applied blockchain solutions.";
+  }
 
   if (text.includes("vasp") || text.includes("compliance") || text.includes("exchange")) {
     return "For VASP compliance, NuruTrace supports crypto businesses with Kenya VASPs Act 2025 readiness, registration support, AML policy drafting, monitoring workflows, and ongoing compliance advisory. The best next step is a short demo call so the team can map your operating model.";
@@ -73,10 +91,32 @@ function buildReply(input: string) {
   return "NuruTrace works across blockchain forensics, VASP compliance, bank and MFI advisory, private investigations, legal education, research, and applied blockchain solutions. Tell me your role or the problem you're solving, and I'll point you to the closest service.";
 }
 
+function getInstantReply(input: string) {
+  const text = input.toLowerCase();
+
+  if (/^(hi|hey|hello|hallo|sup|yo)\b/.test(text)) {
+    return buildReply(input);
+  }
+
+  if (
+    text.includes("what is this") ||
+    text.includes("what's this") ||
+    text.includes("what is the platform") ||
+    text.includes("whats this platform") ||
+    text.includes("platform about") ||
+    text.includes("what do you do")
+  ) {
+    return buildReply(input);
+  }
+
+  return undefined;
+}
+
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const [leadOpen, setLeadOpen] = useState(false);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const widgetRef = useRef<HTMLDivElement>(null);
@@ -114,20 +154,67 @@ export function ChatbotWidget() {
     };
   }, [isOpen]);
 
-  const sendMessage = (text: string) => {
+  const sendMessage = async (text: string) => {
     const trimmed = text.trim();
 
-    if (!trimmed) {
+    if (!trimmed || isSending) {
       return;
     }
 
-    setMessages((current) => [
-      ...current,
-      { id: Date.now(), role: "user", text: trimmed },
-      { id: Date.now() + 1, role: "assistant", text: buildReply(trimmed) },
-    ]);
+    const userMessage: Message = { id: Date.now(), role: "user", text: trimmed };
+    const instantReply = getInstantReply(trimmed);
+
+    if (instantReply) {
+      setMessages((current) => [
+        ...current,
+        userMessage,
+        { id: Date.now() + 1, role: "assistant", text: instantReply },
+      ]);
+      setInput("");
+      setIsOpen(true);
+      return;
+    }
+
+    const pendingMessage: Message = {
+      id: Date.now() + 1,
+      role: "assistant",
+      text: "Thinking...",
+      pending: true,
+    };
+    const history = messages.slice(-10).map(({ role, text }) => ({ role, text }));
+
+    setMessages((current) => [...current, userMessage, pendingMessage]);
     setInput("");
     setIsOpen(true);
+    setIsSending(true);
+
+    try {
+      const result = await askNuruAssistant({
+        data: {
+          message: trimmed,
+          history,
+        },
+      });
+
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === pendingMessage.id
+            ? { id: message.id, role: "assistant", text: result.reply }
+            : message,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === pendingMessage.id
+            ? { id: message.id, role: "assistant", text: buildReply(trimmed) }
+            : message,
+        ),
+      );
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const openHumanHandoff = () => {
@@ -172,9 +259,9 @@ export function ChatbotWidget() {
       {isOpen && (
         <section
           aria-label="NuruTrace chatbot"
-          className="w-[min(380px,calc(100vw-2.5rem))] overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[0_24px_70px_-28px_rgba(10,22,40,0.55)]"
+          className="flex max-h-[min(720px,calc(100vh-7rem))] w-[min(380px,calc(100vw-2.5rem))] flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[0_24px_70px_-28px_rgba(10,22,40,0.55)]"
         >
-          <div className="flex items-start justify-between gap-4 bg-[var(--navy-900)] px-4 py-4 text-white">
+          <div className="shrink-0 flex items-start justify-between gap-4 bg-[var(--navy-900)] px-4 py-4 text-white">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-[var(--gold-500)] text-[var(--navy-900)]">
                 <Bot size={20} />
@@ -194,7 +281,7 @@ export function ChatbotWidget() {
             </button>
           </div>
 
-          <div className="max-h-[360px] space-y-3 overflow-y-auto bg-[var(--cream-50)] px-4 py-4">
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-[var(--cream-50)] px-4 py-4">
             {messages.length === 1 && (
               <div className="rounded-lg border border-[var(--border)] bg-white p-3">
                 <p className="text-sm font-semibold text-[var(--navy-900)]">How can we help?</p>
@@ -204,6 +291,7 @@ export function ChatbotWidget() {
                       key={item.label}
                       type="button"
                       onClick={() => sendMessage(item.prompt)}
+                      disabled={isSending}
                       className="flex items-center justify-between rounded-md border border-[var(--border)] px-3 py-2 text-left text-sm font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
                     >
                       {item.label}
@@ -225,7 +313,9 @@ export function ChatbotWidget() {
                       : "border border-[var(--border)] bg-white text-[var(--grey-700)]"
                   }`}
                 >
-                  {message.text}
+                  <span className={message.pending ? "animate-pulse" : undefined}>
+                    {message.text}
+                  </span>
                 </div>
               </div>
             ))}
@@ -263,13 +353,14 @@ export function ChatbotWidget() {
             <div ref={messageEndRef} />
           </div>
 
-          <div className="border-t border-[var(--border)] bg-white p-4">
+          <div className="shrink-0 border-t border-[var(--border)] bg-white p-4">
             <div className="mb-3 flex flex-wrap gap-2">
               {guidedPrompts.map((item) => (
                 <button
                   key={item.label}
                   type="button"
                   onClick={() => sendMessage(item.prompt)}
+                  disabled={isSending}
                   className="rounded-md border border-[var(--border)] px-2.5 py-1.5 text-xs font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
                 >
                   {item.label}
@@ -293,10 +384,12 @@ export function ChatbotWidget() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Ask about services..."
+                disabled={isSending}
                 className="min-w-0 flex-1 rounded-md border border-[var(--border)] px-3 py-2 text-sm text-[var(--navy-900)] outline-none transition-colors placeholder:text-[var(--grey-700)]/70 focus:border-[var(--gold-500)]"
               />
               <button
                 type="submit"
+                disabled={isSending}
                 className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-[var(--gold-500)] text-[var(--navy-900)] transition-colors hover:bg-[var(--gold-300)]"
                 aria-label="Send message"
               >
