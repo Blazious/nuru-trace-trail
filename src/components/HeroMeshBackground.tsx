@@ -48,6 +48,7 @@ export function HeroMeshBackground() {
 
     // Set interactive variables based on viewport width
     const updateResponsiveSettings = () => {
+      if (typeof window === "undefined") return;
       const w = window.innerWidth;
       isMobileDevice = w < 640;
       if (w < 640) {
@@ -79,20 +80,33 @@ export function HeroMeshBackground() {
 
     updateResponsiveSettings();
 
-    // Check accessibility reduced-motion preference
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let prefersReducedMotion = reducedMotionQuery.matches;
+    // Check accessibility reduced-motion preference safely
+    const reducedMotionQuery = 
+      typeof window !== "undefined" && typeof window.matchMedia === "function"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)")
+        : null;
+    
+    let prefersReducedMotion = reducedMotionQuery ? reducedMotionQuery.matches : false;
 
     const handleReducedMotionChange = (e: MediaQueryListEvent) => {
       prefersReducedMotion = e.matches;
       initParticles();
       drawStaticOrStartLoop();
     };
-    reducedMotionQuery.addEventListener("change", handleReducedMotionChange);
+
+    if (reducedMotionQuery) {
+      if (reducedMotionQuery.addEventListener) {
+        reducedMotionQuery.addEventListener("change", handleReducedMotionChange);
+      } else if (reducedMotionQuery.addListener) {
+        // Fallback for older Safari/iOS versions
+        reducedMotionQuery.addListener(handleReducedMotionChange);
+      }
+    }
 
     // Initialise particles
     const initParticles = () => {
       particles = [];
+      if (width === 0 || height === 0) return;
       for (let i = 0; i < particleCount; i++) {
         const isGold = Math.random() < 0.25; // 25% brand gold
         particles.push({
@@ -115,15 +129,23 @@ export function HeroMeshBackground() {
       width = rect.width;
       height = rect.height;
 
+      if (width === 0 || height === 0) return;
+
       updateResponsiveSettings();
 
       // Cap resolution scale (devicePixelRatio) on mobile to 1.5x to preserve GPU performance
-      const rawDPR = window.devicePixelRatio || 1;
+      const rawDPR = (typeof window !== "undefined" && window.devicePixelRatio) || 1;
       const dpr = isMobileDevice ? Math.min(rawDPR, 1.5) : Math.min(rawDPR, 2.5);
 
       canvas.width = width * dpr;
       canvas.height = height * dpr;
-      ctx.scale(dpr, dpr);
+      
+      // Reset transform before scaling to avoid cumulative transforms on multiple resize triggers
+      if (ctx.setTransform) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      } else {
+        ctx.scale(dpr, dpr);
+      }
 
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
@@ -199,14 +221,14 @@ export function HeroMeshBackground() {
     };
 
     // Use passive: true to ensure scrolling is never blocked by handlers
-    window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    window.addEventListener("pointerdown", handlePointerDown, { passive: true });
-    window.addEventListener("pointerup", handlePointerUpOrCancel, { passive: true });
-    window.addEventListener("pointercancel", handlePointerUpOrCancel, { passive: true });
-
-    // Handle mobile-specific orientation changes and window resizing
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
+    if (typeof window !== "undefined") {
+      window.addEventListener("pointermove", handlePointerMove, { passive: true });
+      window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+      window.addEventListener("pointerup", handlePointerUpOrCancel, { passive: true });
+      window.addEventListener("pointercancel", handlePointerUpOrCancel, { passive: true });
+      window.addEventListener("resize", handleResize);
+      window.addEventListener("orientationchange", handleResize);
+    }
 
     // Frame rate control config
     let lastFrameTime = 0;
@@ -214,7 +236,7 @@ export function HeroMeshBackground() {
     const mobileFrameInterval = 1000 / targetMobileFPS;
 
     function draw() {
-      if (!ctx) return;
+      if (!ctx || width === 0 || height === 0) return;
       ctx.clearRect(0, 0, width, height);
 
       const p = pointerRef.current;
@@ -314,6 +336,7 @@ export function HeroMeshBackground() {
     }
 
     function update() {
+      if (width === 0 || height === 0) return;
       const p = pointerRef.current;
 
       for (let i = 0; i < particles.length; i++) {
@@ -353,7 +376,6 @@ export function HeroMeshBackground() {
       if (isMobileDevice) {
         // Throttle frame rate to ~30 FPS on mobile devices
         if (elapsed >= mobileFrameInterval) {
-          // Subtract modulo to account for inconsistent frame timings
           lastFrameTime = timestamp - (elapsed % mobileFrameInterval);
           update();
           draw();
@@ -367,27 +389,34 @@ export function HeroMeshBackground() {
       animationFrameId = requestAnimationFrame(loop);
     }
 
-    // Battery/CPU optimisation observers
+    // Battery/CPU optimisation observers safely
     let isPageVisible = true;
     let isIntersecting = true;
 
     const handleVisibilityChange = () => {
-      isPageVisible = !document.hidden;
+      if (typeof document !== "undefined") {
+        isPageVisible = !document.hidden;
+      }
       manageAnimationState();
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          isIntersecting = entry.isIntersecting;
-        }
-        manageAnimationState();
-      },
-      { threshold: 0.01 } // Trigger state transition when at least 1% of section is visible
-    );
+    let observer: IntersectionObserver | null = null;
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            isIntersecting = entry.isIntersecting;
+          }
+          manageAnimationState();
+        },
+        { threshold: 0.01 } // Trigger state transition when at least 1% of section is visible
+      );
+      observer.observe(container);
+    }
 
-    observer.observe(container);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    }
 
     function manageAnimationState() {
       if (prefersReducedMotion) return;
@@ -408,16 +437,31 @@ export function HeroMeshBackground() {
     // Cleanup all event bindings
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("orientationchange", handleResize);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      observer.disconnect();
+      
+      if (reducedMotionQuery) {
+        if (reducedMotionQuery.removeEventListener) {
+          reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
+        } else if (reducedMotionQuery.removeListener) {
+          reducedMotionQuery.removeListener(handleReducedMotionChange);
+        }
+      }
 
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerdown", handlePointerDown);
-      window.removeEventListener("pointerup", handlePointerUpOrCancel);
-      window.removeEventListener("pointercancel", handlePointerUpOrCancel);
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
+        window.removeEventListener("orientationchange", handleResize);
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerdown", handlePointerDown);
+        window.removeEventListener("pointerup", handlePointerUpOrCancel);
+        window.removeEventListener("pointercancel", handlePointerUpOrCancel);
+      }
+
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
+
+      if (observer) {
+        observer.disconnect();
+      }
     };
   }, []);
 
