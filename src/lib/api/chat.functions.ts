@@ -84,8 +84,9 @@ export const askNuruAssistant = createServerFn({ method: "POST" })
       },
     ];
 
+    const modelName = config.geminiModel.trim().replace(/^models\//, "");
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${config.geminiModel}:generateContent`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
       {
         method: "POST",
         headers: {
