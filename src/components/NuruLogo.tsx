@@ -34,12 +34,12 @@ export function NuruLogoMark({ className }: { className?: string }) {
     >
       <defs>
         <radialGradient id="nuru-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#FFC94D" stop-opacity="0.6" />
-          <stop offset="100%" stop-color="#FFC94D" stop-opacity="0" />
+          <stop offset="0%" stopColor="#FFC94D" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#FFC94D" stopOpacity="0" />
         </radialGradient>
         <linearGradient id="link-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFD470" />
-          <stop offset="100%" stop-color="#F5A623" />
+          <stop offset="0%" stopColor="#FFD470" />
+          <stop offset="100%" stopColor="#F5A623" />
         </linearGradient>
       </defs>
 

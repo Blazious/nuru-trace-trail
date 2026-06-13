@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin, Mail } from "lucide-react";
+import { HeroMeshBackground } from "./HeroMeshBackground";
 import { NuruLogo } from "./NuruLogo";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-[var(--navy-900)] text-white">
-      <div className="container-nt grid gap-12 py-16 md:grid-cols-3">
+    <footer className="relative isolate overflow-hidden bg-[var(--navy-900)] text-white">
+      <HeroMeshBackground variant="footer" interactive={false} />
+      <div className="container-nt relative z-10 grid gap-12 py-16 md:grid-cols-3">
         <div>
           <NuruLogo markClassName="h-10 w-10" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
@@ -61,7 +63,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-[var(--gold-500)]/30">
+      <div className="relative z-10 border-t border-[var(--gold-500)]/30">
         <div className="container-nt flex flex-col items-start justify-between gap-3 py-6 text-xs text-white/40 md:flex-row md:items-center">
           <p>© {new Date().getFullYear()} NuruTrace Labs Limited. All rights reserved.</p>
           <div className="flex gap-6">

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bot, ChevronDown, Mail, MessageCircle, Send, Sparkles, X } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
+import { HeroMeshBackground } from "./HeroMeshBackground";
 import { askNuruAssistant } from "../lib/api/chat.functions";
 
 type Message = {
@@ -281,76 +282,79 @@ export function ChatbotWidget() {
             </button>
           </div>
 
-          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-[var(--cream-50)] px-4 py-4">
-            {messages.length === 1 && (
-              <div className="rounded-lg border border-[var(--border)] bg-white p-3">
-                <p className="text-sm font-semibold text-[var(--navy-900)]">How can we help?</p>
-                <div className="mt-3 grid gap-2">
-                  {guidedPrompts.map((item) => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      onClick={() => sendMessage(item.prompt)}
-                      disabled={isSending}
-                      className="flex items-center justify-between rounded-md border border-[var(--border)] px-3 py-2 text-left text-sm font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
-                    >
-                      {item.label}
-                      <ArrowRight size={14} className="text-[var(--gold-500)]" />
-                    </button>
-                  ))}
+          <div className="relative min-h-0 flex-1 overflow-y-auto bg-[var(--cream-50)] px-4 py-4">
+            <HeroMeshBackground variant="chat" interactive={false} />
+            <div className="relative z-10 space-y-3">
+              {messages.length === 1 && (
+                <div className="rounded-lg border border-[var(--border)] bg-white/95 p-3 shadow-[0_16px_34px_-30px_rgba(10,22,40,0.5)] backdrop-blur-sm">
+                  <p className="text-sm font-semibold text-[var(--navy-900)]">How can we help?</p>
+                  <div className="mt-3 grid gap-2">
+                    {guidedPrompts.map((item) => (
+                      <button
+                        key={item.label}
+                        type="button"
+                        onClick={() => sendMessage(item.prompt)}
+                        disabled={isSending}
+                        className="flex items-center justify-between rounded-md border border-[var(--border)] bg-white px-3 py-2 text-left text-sm font-medium text-[var(--navy-900)] transition-colors hover:border-[var(--gold-500)] hover:bg-[var(--cream-50)]"
+                      >
+                        {item.label}
+                        <ArrowRight size={14} className="text-[var(--gold-500)]" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              )}
+              {messages.map((message) => (
                 <div
-                  className={`max-w-[86%] rounded-lg px-3 py-2 text-sm leading-relaxed ${
-                    message.role === "user"
-                      ? "bg-[var(--navy-900)] text-white"
-                      : "border border-[var(--border)] bg-white text-[var(--grey-700)]"
-                  }`}
+                  key={message.id}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                 >
-                  <span className={message.pending ? "animate-pulse" : undefined}>
-                    {message.text}
-                  </span>
+                  <div
+                    className={`max-w-[86%] rounded-lg px-3 py-2 text-sm leading-relaxed shadow-[0_12px_28px_-24px_rgba(10,22,40,0.55)] ${
+                      message.role === "user"
+                        ? "bg-[var(--navy-900)] text-white"
+                        : "border border-[var(--border)] bg-white/95 text-[var(--grey-700)] backdrop-blur-sm"
+                    }`}
+                  >
+                    <span className={message.pending ? "animate-pulse" : undefined}>
+                      {message.text}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {leadOpen && !leadSubmitted && (
-              <form
-                onSubmit={handleLeadSubmit}
-                className="rounded-lg border border-[var(--gold-500)]/40 bg-white p-3"
-              >
-                <p className="text-sm font-semibold text-[var(--navy-900)]">Handoff context</p>
-                <div className="mt-3 grid gap-2">
-                  <input
-                    name="name"
-                    required
-                    placeholder="Full name"
-                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
-                  />
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="Email"
-                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
-                  />
-                  <input
-                    name="organisation"
-                    placeholder="Organisation"
-                    className="rounded-md border border-[var(--border)] px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
-                  />
-                  <button type="submit" className="btn-gold !py-2 text-xs">
-                    Prepare request
-                  </button>
-                </div>
-              </form>
-            )}
-            <div ref={messageEndRef} />
+              ))}
+              {leadOpen && !leadSubmitted && (
+                <form
+                  onSubmit={handleLeadSubmit}
+                  className="rounded-lg border border-[var(--gold-500)]/40 bg-white/95 p-3 backdrop-blur-sm"
+                >
+                  <p className="text-sm font-semibold text-[var(--navy-900)]">Handoff context</p>
+                  <div className="mt-3 grid gap-2">
+                    <input
+                      name="name"
+                      required
+                      placeholder="Full name"
+                      className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                    />
+                    <input
+                      name="email"
+                      type="email"
+                      required
+                      placeholder="Email"
+                      className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                    />
+                    <input
+                      name="organisation"
+                      placeholder="Organisation"
+                      className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-sm outline-none focus:border-[var(--gold-500)]"
+                    />
+                    <button type="submit" className="btn-gold !py-2 text-xs">
+                      Prepare request
+                    </button>
+                  </div>
+                </form>
+              )}
+              <div ref={messageEndRef} />
+            </div>
           </div>
 
           <div className="shrink-0 border-t border-[var(--border)] bg-white p-4">

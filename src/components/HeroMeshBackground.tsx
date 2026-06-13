@@ -11,9 +11,66 @@ interface Particle {
   glowRadius: number;
 }
 
-export function HeroMeshBackground() {
+type MeshVariant = "hero" | "footer" | "chat";
+
+interface HeroMeshBackgroundProps {
+  variant?: MeshVariant;
+  interactive?: boolean;
+  className?: string;
+}
+
+const variantStyles: Record<
+  MeshVariant,
+  {
+    className: string;
+    canvasClassName: string;
+    overlayClassName: string;
+    particleScale: number;
+    opacityScale: number;
+    neutralColor: string;
+    neutralLinkColor: string;
+  }
+> = {
+  hero: {
+    className: "absolute inset-0 overflow-hidden pointer-events-none",
+    canvasClassName: "pointer-events-auto absolute inset-0 block h-full w-full opacity-85",
+    overlayClassName:
+      "absolute inset-0 bg-gradient-to-b from-[var(--navy-900)]/62 via-[var(--navy-900)]/76 to-[var(--navy-900)]/96 pointer-events-none",
+    particleScale: 1,
+    opacityScale: 1,
+    neutralColor: "255, 255, 255",
+    neutralLinkColor: "255, 255, 255",
+  },
+  footer: {
+    className: "absolute inset-0 overflow-hidden pointer-events-none",
+    canvasClassName: "absolute inset-0 block h-full w-full opacity-70",
+    overlayClassName:
+      "absolute inset-0 bg-gradient-to-br from-[var(--navy-900)]/78 via-[var(--navy-900)]/86 to-[var(--navy-900)]/98 pointer-events-none",
+    particleScale: 0.8,
+    opacityScale: 0.85,
+    neutralColor: "255, 255, 255",
+    neutralLinkColor: "255, 255, 255",
+  },
+  chat: {
+    className: "absolute inset-0 overflow-hidden pointer-events-none",
+    canvasClassName: "absolute inset-0 block h-full w-full opacity-45",
+    overlayClassName:
+      "absolute inset-0 bg-gradient-to-b from-[var(--cream-50)]/70 via-[var(--cream-50)]/78 to-[var(--cream-50)]/88 pointer-events-none",
+    particleScale: 0.55,
+    opacityScale: 0.45,
+    neutralColor: "10, 22, 40",
+    neutralLinkColor: "10, 22, 40",
+  },
+};
+
+export function HeroMeshBackground({
+  variant = "hero",
+  interactive = true,
+  className = "",
+}: HeroMeshBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const styles = variantStyles[variant];
   
   // Track pointer state in a ref to keep it out of the React render cycle
   const pointerRef = useRef({
@@ -32,10 +89,15 @@ export function HeroMeshBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Declare all variables at the very top of useEffect to prevent Temporal Dead Zone (TDZ) ReferenceErrors
     let animationFrameId = 0;
     let particles: Particle[] = [];
     let width = 0;
     let height = 0;
+    let lastFrameTime = 0;
+
+    const targetMobileFPS = 30;
+    const mobileFrameInterval = 1000 / targetMobileFPS;
 
     // Config variables that scale responsively
     let particleCount = 70;
@@ -114,10 +176,10 @@ export function HeroMeshBackground() {
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * 0.35 * speedMultiplier,
           vy: (Math.random() - 0.5) * 0.35 * speedMultiplier,
-          size: (Math.random() * 1.5 + 1.25) * sizeScale,
+          size: (Math.random() * 1.7 + 1.4) * sizeScale * styles.particleScale,
           isGold,
-          alpha: isGold ? 0.75 : 0.35,
-          glowRadius: isGold ? (Math.random() * 6 + 6) * sizeScale : 0,
+          alpha: (isGold ? 0.9 : 0.5) * styles.opacityScale,
+          glowRadius: isGold ? (Math.random() * 8 + 8) * sizeScale * styles.particleScale : 0,
         });
       }
     };
@@ -176,7 +238,7 @@ export function HeroMeshBackground() {
 
     // Pointer event handlers listening on window to catch hover anywhere on the Hero section
     const handlePointerMove = (e: PointerEvent) => {
-      if (prefersReducedMotion || !container) return;
+      if (!interactive || prefersReducedMotion || !container) return;
       const rect = container.getBoundingClientRect();
       
       const buffer = 150;
@@ -198,7 +260,7 @@ export function HeroMeshBackground() {
     };
 
     const handlePointerDown = (e: PointerEvent) => {
-      if (prefersReducedMotion || !container) return;
+      if (!interactive || prefersReducedMotion || !container) return;
       const rect = container.getBoundingClientRect();
       
       const inBounds = (
@@ -229,11 +291,6 @@ export function HeroMeshBackground() {
       window.addEventListener("resize", handleResize);
       window.addEventListener("orientationchange", handleResize);
     }
-
-    // Frame rate control config
-    let lastFrameTime = 0;
-    const targetMobileFPS = 30;
-    const mobileFrameInterval = 1000 / targetMobileFPS;
 
     function draw() {
       if (!ctx || width === 0 || height === 0) return;
@@ -280,16 +337,16 @@ export function HeroMeshBackground() {
             linkCounts[i]++;
             linkCounts[j]++;
 
-            const opacity = (1 - dist / maxDistance) * 0.22;
+            const opacity = (1 - dist / maxDistance) * 0.34;
 
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
 
             if (p1.isGold || p2.isGold) {
-              ctx.strokeStyle = `rgba(245, 166, 35, ${opacity * 1.5})`;
+              ctx.strokeStyle = `rgba(245, 166, 35, ${opacity * 1.7})`;
             } else {
-              ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+              ctx.strokeStyle = `rgba(${styles.neutralLinkColor}, ${opacity})`;
             }
             ctx.lineWidth = 0.8;
             ctx.stroke();
@@ -303,7 +360,7 @@ export function HeroMeshBackground() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < attractionRadius) {
-            const opacity = (1 - dist / attractionRadius) * 0.32 * p.currentAlpha;
+            const opacity = (1 - dist / attractionRadius) * 0.44 * p.currentAlpha;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p.x, p.y);
@@ -323,15 +380,15 @@ export function HeroMeshBackground() {
 
         if (p1.isGold) {
           ctx.shadowBlur = p1.glowRadius;
-          ctx.shadowColor = "rgba(245, 166, 35, 0.55)";
+          ctx.shadowColor = "rgba(245, 166, 35, 0.75)";
           ctx.fillStyle = `rgba(245, 166, 35, ${p1.alpha})`;
         } else {
           ctx.shadowBlur = 0;
-          ctx.fillStyle = `rgba(255, 255, 255, ${p1.alpha})`;
+          ctx.fillStyle = `rgba(${styles.neutralColor}, ${p1.alpha})`;
         }
 
         ctx.fill();
-        ctx.shadowBlur = 0; // reset context shadow state
+        ctx.shadowBlur = 0;
       }
     }
 
@@ -345,21 +402,18 @@ export function HeroMeshBackground() {
         p1.x += p1.vx;
         p1.y += p1.vy;
 
-        // Bounce off canvas boundaries
         if (p1.x < 0 || p1.x > width) p1.vx *= -1;
         if (p1.y < 0 || p1.y > height) p1.vy *= -1;
 
-        // Clamp positions to avoid escape
         p1.x = Math.max(0, Math.min(width, p1.x));
         p1.y = Math.max(0, Math.min(height, p1.y));
 
-        // Soft gravity pull toward cursor/spotlight
         if (p.active && p.currentAlpha > 0) {
           const dx = p.x - p1.x;
           const dy = p.y - p1.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < attractionRadius) {
+          if (dist > 0 && dist < attractionRadius) {
             const force = ((attractionRadius - dist) / attractionRadius) * 0.06 * p.currentAlpha;
             p1.x += (dx / dist) * force;
             p1.y += (dy / dist) * force;
@@ -374,7 +428,6 @@ export function HeroMeshBackground() {
       const elapsed = timestamp - lastFrameTime;
 
       if (isMobileDevice) {
-        // Throttle frame rate to ~30 FPS on mobile devices
         if (elapsed >= mobileFrameInterval) {
           lastFrameTime = timestamp - (elapsed % mobileFrameInterval);
           update();
@@ -389,7 +442,6 @@ export function HeroMeshBackground() {
       animationFrameId = requestAnimationFrame(loop);
     }
 
-    // Battery/CPU optimisation observers safely
     let isPageVisible = true;
     let isIntersecting = true;
 
@@ -409,7 +461,7 @@ export function HeroMeshBackground() {
           }
           manageAnimationState();
         },
-        { threshold: 0.01 } // Trigger state transition when at least 1% of section is visible
+        { threshold: 0.01 }
       );
       observer.observe(container);
     }
@@ -426,18 +478,15 @@ export function HeroMeshBackground() {
           lastFrameTime = performance.now();
           animationFrameId = requestAnimationFrame(loop);
         }
-      } else {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-          animationFrameId = 0;
-        }
+      } else if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = 0;
       }
     }
 
-    // Cleanup all event bindings
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      
+
       if (reducedMotionQuery) {
         if (reducedMotionQuery.removeEventListener) {
           reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
@@ -463,16 +512,18 @@ export function HeroMeshBackground() {
         observer.disconnect();
       }
     };
-  }, []);
+  }, [
+    interactive,
+    styles.neutralColor,
+    styles.neutralLinkColor,
+    styles.opacityScale,
+    styles.particleScale,
+  ]);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none">
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-auto absolute inset-0 block h-full w-full opacity-60"
-      />
-      {/* Overlay gradient blending the background nicely with content layers */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy-900)]/75 via-[var(--navy-900)]/88 to-[var(--navy-900)] pointer-events-none" />
+    <div ref={containerRef} className={`${styles.className} ${className}`}>
+      <canvas ref={canvasRef} className={styles.canvasClassName} />
+      <div className={styles.overlayClassName} />
     </div>
   );
 }
