@@ -32,28 +32,47 @@ export function NuruLogoMark({ className }: { className?: string }) {
       aria-label="NuruTrace Labs logo"
       className={cn("h-9 w-9 shrink-0", className)}
     >
-      <g fill="none" stroke="#FFC326" strokeLinecap="round" strokeWidth="8">
-        <path d="M64 13v28" />
-        <path d="M64 87v28" />
-        <path d="M13 64h28" />
-        <path d="M87 64h28" />
-        <path d="M28 28l20 20" />
-        <path d="M80 80l20 20" />
-        <path d="M100 28 80 48" />
-        <path d="M48 80l-20 20" />
-      </g>
-      <g fill="#FFC326">
-        <circle cx="64" cy="8" r="8" />
-        <circle cx="64" cy="120" r="8" />
-        <circle cx="8" cy="64" r="8" />
-        <circle cx="120" cy="64" r="8" />
-        <circle cx="24" cy="24" r="8" />
-        <circle cx="104" cy="104" r="8" />
-        <circle cx="104" cy="24" r="8" />
-        <circle cx="24" cy="104" r="8" />
-      </g>
-      <circle cx="64" cy="64" r="32" fill="#3F82F4" />
-      <circle cx="64" cy="64" r="15" fill="#FFC326" />
+      <defs>
+        <radialGradient id="nuru-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#FFC94D" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#FFC94D" stop-opacity="0" />
+        </radialGradient>
+        <linearGradient id="link-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FFD470" />
+          <stop offset="100%" stop-color="#F5A623" />
+        </linearGradient>
+      </defs>
+
+      {/* Central Glow (representing Nuru / Light) */}
+      <circle cx="64" cy="64" r="32" fill="url(#nuru-glow)" />
+
+      {/* Network Links (3D Isometric Cube / Graph) */}
+      <polygon
+        points="64,20 102,42 102,86 64,108 26,86 26,42"
+        fill="none"
+        stroke="url(#link-grad)"
+        strokeWidth="5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M64,64 L64,20 M64,64 L102,86 M64,64 L26,86"
+        stroke="url(#link-grad)"
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.85"
+      />
+
+      {/* Network Nodes (Vertices) */}
+      <circle cx="64" cy="20" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="102" cy="42" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="102" cy="86" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="64" cy="108" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="26" cy="86" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+      <circle cx="26" cy="42" r="5" fill="#FFFFFF" stroke="#F5A623" strokeWidth="2.5" />
+
+      {/* Central Glowing Node */}
+      <circle cx="64" cy="64" r="8" fill="#FFC94D" stroke="#F5A623" strokeWidth="3" />
     </svg>
   );
 }
