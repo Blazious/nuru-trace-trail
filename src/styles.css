@@ -242,6 +242,95 @@
   stroke-width: 0.14;
 }
 
+/* Card hover glow and dynamic lift effect */
+.group {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.group:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 40px -20px rgba(10, 22, 40, 0.35), 0 0 1px 1px rgba(245, 166, 35, 0.2);
+}
+
+/* Icons inside hovered cards get scaled and turned brighter gold */
+.group:hover .grid svg,
+.group:hover div svg {
+  transform: scale(1.12) rotate(3deg);
+  color: var(--gold-300) !important;
+}
+
+.group .grid svg,
+.group div svg {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease;
+}
+
+/* Links & button arrows shift right on card hover */
+.group:hover a svg,
+.group:hover button svg {
+  transform: translateX(4px);
+}
+
+.group a svg,
+.group button svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tactile bounce and lift on buttons */
+.btn-gold,
+.btn-outline-gold,
+.btn-ghost-navy {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.btn-gold:hover,
+.btn-outline-gold:hover,
+.btn-ghost-navy:hover {
+  transform: translateY(-2px);
+}
+
+.btn-gold:active,
+.btn-outline-gold:active,
+.btn-ghost-navy:active {
+  transform: translateY(0);
+}
+
+/* Interactive shift on stats and list borders */
+.border-l-2 {
+  transition: border-color 0.35s ease, padding-left 0.35s ease;
+}
+
+.border-l-2:hover {
+  border-color: var(--navy-900) !important;
+}
+
+li.border-l-2:hover,
+p.border-l-2:hover {
+  padding-left: 1rem !important;
+}
+
+div.border-l-2:hover {
+  padding-left: 1.75rem !important;
+}
+
+/* Founder avatar placeholder visual updates */
+.group:hover .aspect-square {
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--gold-500) 100%) !important;
+  box-shadow: inset 0 0 24px rgba(245, 166, 35, 0.25);
+}
+
+.group .aspect-square {
+  transition: background 0.5s ease, box-shadow 0.5s ease;
+}
+
+.group:hover .aspect-square span {
+  transform: scale(1.15);
+  text-shadow: 0 0 12px rgba(245, 166, 35, 0.6);
+}
+
+.group .aspect-square span {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mesh-motion,
   .mesh-line,
@@ -249,7 +338,15 @@
   .mesh-node,
   .mesh-node-ring,
   .mesh-large-ring,
-  .animate-fade-up {
+  .animate-fade-up,
+  .group,
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-ghost-navy,
+  .border-l-2 {
     animation: none;
+    transition: none !important;
+    transform: none !important;
   }
 }
+

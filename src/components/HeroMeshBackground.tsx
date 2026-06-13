@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import heroImage from "@/assets/hero-network.jpg";
 
 const nodes = [
@@ -11,8 +12,40 @@ const nodes = [
 ];
 
 export function HeroMeshBackground() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleMove = (e: PointerEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      
+      // Track coordinates relative to the hero section
+      const buffer = 150;
+      if (
+        e.clientY >= rect.top - buffer &&
+        e.clientY <= rect.bottom + buffer &&
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right
+      ) {
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        setCoords({ x, y });
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("pointermove", handleMove);
+    return () => {
+      window.removeEventListener("pointermove", handleMove);
+    };
+  }, []);
+
   return (
-    <>
+    <div ref={containerRef} className="absolute inset-0 overflow-hidden pointer-events-none">
       <img
         src={heroImage}
         alt=""
@@ -77,7 +110,18 @@ export function HeroMeshBackground() {
 
         <circle cx="78" cy="58" r="16" className="mesh-large-ring" />
       </svg>
+
+      {/* Nuru Spotlight radial glow */}
+      <div
+        className="absolute inset-0 transition-opacity duration-500 ease-out"
+        style={{
+          opacity: isVisible ? 1 : 0,
+          background: `radial-gradient(circle 350px at ${coords.x}px ${coords.y}px, rgba(245, 166, 35, 0.12) 0%, rgba(245, 166, 35, 0.03) 45%, transparent 100%)`,
+        }}
+      />
+
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--navy-900)]/75 via-[var(--navy-900)]/88 to-[var(--navy-900)]" />
-    </>
+    </div>
   );
 }
+

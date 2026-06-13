@@ -94,7 +94,7 @@ function AboutPage() {
           </div>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {founders.map((f) => (
-              <div key={f.title} className="rounded-lg border border-[var(--border)] bg-white p-8">
+              <div key={f.title} className="group rounded-lg border border-[var(--border)] bg-white p-8">
                 <div className="aspect-square w-full rounded-md bg-gradient-to-br from-[var(--navy-900)] to-[var(--navy-700)] grid place-items-center">
                   <span className="font-display text-5xl text-[var(--gold-500)]">N</span>
                 </div>
